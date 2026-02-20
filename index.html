@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TaiYTB - Premium System v5.0 Admin Security (iOS 2026 Edition)</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        :root {
+            --primary: #22d3ee;
+            --premium: #fbbf24;
+            --bg-dark: #0b0e14;
+            --admin-color: #f472b6;
+            --glass: rgba(22, 27, 34, 0.85);
+            --border: rgba(255, 255, 255, 0.08);
+            --zalo-blue: #0068ff;
+            --glow-cyan: rgba(34, 211, 238, 0.3);
+            --permanent-gold: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+            /* iOS 26 Design Tokens */
+            --ios-radius: 1.8rem;
+            --ios-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+            --ios-blur: blur(30px);
+        }
+
+        body { 
+            background-color: var(--bg-dark);
+            color: white; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+        
+        /* Giao diện iOS 26 - Modern Glassmorphism */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: var(--ios-blur);
+            -webkit-backdrop-filter: var(--ios-blur);
+            border: 1px solid var(--border);
+            border-radius: var(--ios-radius);
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: var(--ios-shadow);
+        }
+
+        /* Nút bấm iOS 26 Style */
+        .btn-ios-26 {
+            position: relative;
+            border-radius: 1.5rem;
+            padding: 18px 28px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-ios-26:active {
+            transform: scale(0.92);
+            filter: brightness(0.8);
+        }
+
+        .btn-ios-primary {
+            background: linear-gradient(180deg, #22d3ee 0%, #0891b2 100%);
+            color: #000;
+            box-shadow: 0 10px 30px rgba(34, 211, 238, 0.3);
+        }
+
+        .btn-ios-secondary {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            color: #fff;
+        }
+
+        /* Custom Scrollbar Optimization */
+        .custom-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
+        }
+        .custom-scroll::-webkit-scrollbar { 
+            width: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb { 
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px; 
+        }
+
+        .eye-container { position: relative; }
+        .eye-ping {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: var(--primary); border-radius: 50%;
+            animation: ping-custom 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+            opacity: 0.5;
+        }
+        @keyframes ping-custom { 75%, 100% { transform: scale(2.2); opacity: 0; } }
+        
+        .btn-premium-active {
+            background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700) !important;
+            background-size: 200% auto !important;
+            animation: shine-sweep 3s linear infinite !important;
+            color: black !important; 
+            font-weight: 900;
+            box-shadow: 0 10px 40px rgba(251, 191, 36, 0.4);
+        }
+        @keyframes shine-sweep { to { background-position: 200% center; } }
+
+        #login-toast {
+            position: fixed;
+            top: 25px; right: -450px; 
+            transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+            padding: 2px;
+            border-radius: 1.5rem;
+            background: linear-gradient(var(--bg-dark), var(--bg-dark)) padding-box,
+                        conic-gradient(from var(--angle), #22d3ee, #f472b6, #fbbf24, #22d3ee) border-box;
+            border: 2px solid transparent;
+            animation: rotate-border 4s linear infinite;
+        }
+        @property --angle { syntax: '<angle>';
+            initial-value: 0deg; inherits: false; }
+        @keyframes rotate-border { to { --angle: 360deg; } }
+        #login-toast.active { right: 25px; }
+
+        .fade-in { animation: fadeIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px);
+        } to { opacity: 1; transform: translateY(0); } }
+
+        .input-premium {
+            width: 100%;
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
+            padding: 20px; border-radius: 1.5rem; color: white; outline: none;
+            transition: all 0.3s ease;
+        }
+        .input-premium:focus { border-color: var(--primary); background: rgba(0,0,0,0.6); }
+
+        .star-rating { display: flex; flex-direction: row-reverse; justify-content: center; gap: 12px; }
+        .star-rating input { display: none; }
+        .star-rating label { cursor: pointer; font-size: 2.5rem; color: #2d3436;
+            transition: transform 0.2s, color 0.2s; }
+        .star-rating label:hover { transform: scale(1.2); }
+        .star-rating input:checked ~ label, .star-rating label:hover, .star-rating label:hover ~ label { color: var(--premium);
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.5); }
+
+        /* Image Feedback Preview */
+        .feedback-img-preview {
+            width: 100%;
+            height: 180px; border-radius: 1rem; border: 2px dashed rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 15px;
+            background: rgba(0,0,0,0.2);
+        }
+
+        /* Fix Scroll Modal Feedback */
+        .modal-scroll-container {
+            max-height: 85vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        /* Auth Tabs Animation */
+        .auth-tab-btn { opacity: 0.5; transition: all 0.3s ease; }
+        .auth-tab-btn.active { opacity: 1; color: var(--primary); border-bottom: 2px solid var(--primary); }
+        
+        /* User Tag in Admin */
+        .user-tag {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+        .user-tag:hover {
+            border-color: rgba(34, 211, 238, 0.3);
+            background: rgba(255,255,255,0.08);
+        }
+
+        /* --- NEW STYLE FOR NOTIFICATION POPUP (RGB BORDER) --- */
+        @keyframes rgb-border {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .rgb-box-container {
+            position: relative;
+            border-radius: 2rem;
+            padding: 2px;
+            background: linear-gradient(60deg, #ff00ff, #00ffff, #00ff00, #ffff00, #ff0000);
+            background-size: 300% 300%;
+            animation: rgb-border 3s ease alternate infinite;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+        .rgb-box-content {
+            background: #0f1218;
+            border-radius: calc(2rem - 2px);
+            overflow: hidden;
+            position: relative;
+        }
+        /* --- END NEW STYLE --- */
+
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen px-4 py-8">
+
+    <div id="modal-popup-notification" class="fixed inset-0 bg-black/95 backdrop-blur-sm z-[10000] flex justify-center items-center p-4">
+        <div class="w-full max-w-sm rgb-box-container">
+            <div class="rgb-box-content p-6">
+                <button onclick="closeNewNotification()" class="absolute top-4 right-5 text-gray-400 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+
+                <div class="text-center mt-2 mb-6">
+                    <h3 class="text-xl font-bold text-white mb-1">👋 Chào mừng đến với</h3>
+                    <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">TaiYTB </h2>
+                </div>
+
+                <div class="space-y-4 pl-2 mb-6">
+                    <div class="flex items-center gap-3 text-sm text-gray-300">
+                        <i class="fa-solid fa-globe text-cyan-400 text-lg"></i>
+                        <span>Kết nối với chúng tôi qua mạng xã hội:</span>
+                    </div>
+
+                    <ul class="space-y-3 text-[13px]">
+                        <li class="flex items-center gap-3">
+                            <i class="fa-brands fa-facebook text-blue-500 text-xl w-6 text-center"></i>
+                            <span class="text-gray-300">Facebook: <b class="text-emerald-400">nguyễn tài</b></span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-brands fa-tiktok text-white text-xl w-6 text-center"></i>
+                            <span class="text-gray-300">TikTok: <b class="text-emerald-400">Taiytb0</b></span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-brands fa-discord text-indigo-400 text-xl w-6 text-center"></i>
+                            <span class="text-gray-300">Discord: <b class="text-emerald-400">hypervolt ios</b></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-500/5 border border-yellow-500/20 rounded-xl p-3 mb-6">
+                    <p class="text-[11px] text-gray-300 leading-relaxed font-medium">
+                        <i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-1 text-sm"></i>
+                        Nếu ra một tab quảng cáo thì mọi người xoá tab đó và quay lại tab này nhé không nên làm theo những cái quảng cáo đó.
+                        Cảm ơn bạn đã đọc!
+                    </p>
+                </div>
+
+                <div class="flex justify-center mb-6">
+                    <div class="relative group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000"></div>
+                        <img src="https://ui-avatars.com/api/?name=Tai+YTB&background=0b0e14&color=22d3ee&size=128&bold=true" class="relative w-24 h-24 rounded-2xl border-2 border-white/10 object-cover shadow-2xl">
+                    </div>
+                </div>
+
+                <button onclick="closeNewNotification()" class="w-full py-3.5 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full text-black font-black uppercase text-xs tracking-widest hover:brightness-110 transition-all shadow-[0_0_20px_rgba(52,211,153,0.4)]">
+                    Đóng thông báo
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal-intro" class="hidden fixed inset-0 bg-black/98 backdrop-blur-3xl z-[9999] flex justify-center items-center p-6">
+        <div class="max-w-sm w-full glass-card p-10 text-center relative border-cyan-500/20">
+            <div class="w-24 h-24 bg-cyan-500/10 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 border border-cyan-500/30 animate-pulse">
+                <i class="fa-solid fa-bolt-lightning text-5xl text-cyan-400"></i>
+            </div>
+            <h2 class="text-4xl font-black italic mb-4 tracking-tighter uppercase">Tai<span class="text-cyan-400">YTB</span></h2>
+            <p class="text-gray-400 text-sm mb-10 leading-relaxed font-medium">Hệ thống phân phối ứng dụng iOS Mod Premium bảo mật nhất 2026.</p>
+            <button onclick="closeIntro()" class="w-full btn-ios-26 btn-ios-primary uppercase tracking-widest">Khởi động hệ thống</button>
+        </div>
+    </div>
+
+    <audio id="bg-music" loop><source src="https://raw.githubusercontent.com/taip9912-hue/Tai-ytb/refs/heads/main/snapvideo--Tra%CC%89%20lo%CC%9B%CC%80i%20%40_.013th12%2010%20Nga%CC%80n%20Na%CC%86m%F0%9F%A5%80%23music%20%23lyrics%20%23fyp%20%23viral%20%23trendingsong%20%23thinhhanh%20%23xuhuong%20%23tramy776%20%23my_licee%F0%9F%8D%80%20-4888.mp3" type="audio/mpeg"></audio>
+
+    <header class="w-full max-w-5xl flex justify-between items-center mb-16 relative z-50">
+        <div class="flex items-center gap-4 group cursor-default">
+            <div class="relative">
+                <div class="absolute -inset-1 bg-cyan-500 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                <h1 class="relative text-3xl font-black italic tracking-tighter leading-none">TAI<span class="text-cyan-400">YTB</span></h1>
+            </div>
+            <span id="premium-badge" class="hidden text-[10px] bg-gradient-to-r from-yellow-400 to-amber-600 text-black px-3 py-1 rounded-full font-black uppercase tracking-tighter animate-bounce">Premium Lifetime</span>
+        </div>
+
+        <div id="user-btn" class="flex items-center gap-4 bg-[#161b22]/90 p-2 pr-6 rounded-full border border-white/10 cursor-pointer hover:border-cyan-400/50 transition-all duration-300 relative group">
+            <div class="relative">
+                <img id="u-avatar" src="https://ui-avatars.com/api/?name=G&background=30363d&color=888" class="w-10 h-10 rounded-full ring-2 ring-white/10 object-cover">
+                <div id="status-dot" class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 border-2 border-[#161b22] rounded-full"></div>
+            </div>
+            <div class="flex flex-col">
+                <span id="u-name" class="text-sm font-extrabold tracking-tight">Khách</span>
+                <span id="u-status" class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Ngoại tuyến</span>
+            </div>
+            
+            <div id="dropdown" class="scale-0 opacity-0 origin-top-right absolute right-0 top-full mt-4 w-72 glass-card shadow-2xl transition-all duration-300 z-[100] overflow-hidden py-2 pointer-events-none border-cyan-500/20">
+                <div id="menu-login">
+                    <button onclick="openAuthModal(event)" class="w-full p-4 text-left hover:bg-white/5 flex items-center gap-4 transition-colors">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400"><i class="fa-solid fa-right-to-bracket"></i></div>
+                        <div class="flex flex-col"><b class="text-sm uppercase font-black">Đăng nhập / Đăng ký</b><span class="text-[10px] text-gray-500">Truy cập toàn bộ tính năng</span></div>
+                    </button>
+                </div>
+                <div id="menu-logged" class="hidden">
+                    <div id="admin-only-menu" class="hidden">
+                        <button onclick="openAdminModal(event)" class="w-full p-4 text-left bg-pink-500/5 hover:bg-pink-500/10 text-pink-400 flex items-center gap-4 transition-all">
+                            <div class="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center"><i class="fa-solid fa-user-shield"></i></div>
+                            <b class="text-sm font-black uppercase tracking-tighter">Bảng Điều Khiển Admin</b>
+                        </button>
+                    </div>
+                    <button onclick="openHistory(event)" class="w-full p-4 text-left hover:bg-white/5 flex items-center gap-4 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <b class="text-sm font-black uppercase tracking-tighter">Lịch sử tải xuống</b>
+                    </button>
+                    <button onclick="openKeyModal(event)" class="w-full p-4 text-left hover:bg-yellow-500/5 text-yellow-500 flex items-center gap-4 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center"><i class="fa-solid fa-crown"></i></div>
+                        <b class="text-sm font-black uppercase tracking-tighter">Kích hoạt Premium</b>
+                    </button>
+                    <button onclick="doLogout(event)" class="w-full p-4 text-left hover:bg-red-500/5 text-red-400 flex items-center gap-4 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center"><i class="fa-solid fa-power-off"></i></div>
+                        <b class="text-sm font-black uppercase tracking-tighter">Đăng xuất</b>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex gap-16 mb-20">
+        <div class="flex flex-col items-center group">
+            <div class="eye-container w-20 h-20 glass-card flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+                <div class="eye-ping"></div>
+                <i class="fa-solid fa-eye text-cyan-400 text-2xl relative z-10"></i>
+            </div>
+            <span id="v-count" class="text-lg font-black text-white tracking-tighter">0</span>
+            <span class="text-[10px] text-gray-500 uppercase font-black tracking-widest mt-1">Lượt Xem</span>
+        </div>
+        <div class="flex flex-col items-center group">
+            <div class="w-20 h-20 glass-card flex items-center justify-center mb-4 transition-transform group-hover:scale-110 border-yellow-500/20">
+                <i class="fa-solid fa-star text-yellow-500 text-2xl animate-pulse"></i>
+            </div>
+            <span id="r-count" class="text-lg font-black text-white tracking-tighter">0</span>
+            <span class="text-[10px] text-gray-500 uppercase font-black tracking-widest mt-1">Đánh Giá</span>
+        </div>
+    </div>
+
+    <main id="view-main" class="w-full max-w-xl text-center fade-in">
+        <h2 class="text-6xl font-black mb-10 italic bg-gradient-to-b from-white via-white to-white/10 bg-clip-text text-transparent uppercase tracking-tight">Client IOS</h2>
+        
+        <div id="expiry-timer" class="hidden text-xs text-yellow-500 font-black mb-10 bg-yellow-500/10 py-3 px-8 rounded-full w-max mx-auto border border-yellow-500/30">
+            <i class="fa-solid fa-infinity mr-2"></i>PREMIUM STATUS: <span class="text-white uppercase">Lifetime</span>
+        </div>
+        
+        <div class="space-y-6 mb-20">
+            <button onclick="showList()" class="w-full btn-ios-26 btn-ios-primary text-lg group">
+                Khám phá ứng dụng <i class="fa-solid fa-circle-chevron-right text-xl transition-transform group-hover:translate-x-2"></i>
+            </button>
+            <button onclick="openRating()" class="w-full btn-ios-26 btn-ios-secondary text-sm">
+                 Gửi phản hồi hệ thống <i class="fa-solid fa-paper-plane text-cyan-500"></i>
+            </button>
+        </div>
+
+        <div class="glass-card p-10 text-left relative overflow-hidden bg-gradient-to-145 from-[rgba(30,35,41,0.9)] to-[rgba(11,14,20,0.9)] border-white/5">
+            <h4 class="text-[11px] font-black text-cyan-500 uppercase tracking-[0.4em] mb-8 flex items-center gap-2">
+                <span class="w-8 h-[1px] bg-cyan-500"></span> Thông tin hệ thống
+            </h4>
+            <div class="space-y-8 relative z-10">
+                <div class="flex gap-6 items-start">
+                    <div class="w-14 h-14 shrink-0 bg-[#0b0e14] rounded-2xl flex items-center justify-center border border-white/10 shadow-lg">
+                        <i class="fas fa-shield-virus text-2xl text-cyan-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white mb-1 tracking-tight">Clean IPA</p>
+                        <p class="text-xs text-gray-500 leading-relaxed">Cam kết 100% không chứa mã độc, an toàn cho thiết bị iOS của bạn.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-6 items-start">
+                    <div class="w-14 h-14 shrink-0 bg-[#0b0e14] rounded-2xl flex items-center justify-center border border-white/10 shadow-lg">
+                        <i class="fas fa-bolt-lightning text-2xl text-yellow-500"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white mb-1 tracking-tight">High Speed</p>
+                        <p class="text-xs text-gray-500 leading-relaxed">Thành viên Premium được truy cập link Mediafire trực tiếp, không quảng cáo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section id="view-list" class="hidden w-full max-w-4xl fade-in">
+        <div class="flex justify-between items-center mb-12">
+            <button onclick="showMain()" class="text-gray-500 flex items-center gap-3 hover:text-white transition-all font-black text-xs uppercase tracking-widest"><i class="fa-solid fa-arrow-left-long"></i> Quay về Hub</button>
+            <div class="text-right">
+                <h3 class="text-2xl font-black italic uppercase">Applications <span class="text-cyan-400">Library</span></h3>
+            </div>
+        </div>
+        <div id="dynamic-app-list" class="grid grid-cols-1 gap-6"></div>
+    </section>
+
+    <div id="modal-admin" class="hidden fixed inset-0 bg-black/98 backdrop-blur-2xl z-[9800] flex justify-center items-center p-6">
+        <div class="glass-card w-full max-w-4xl p-10 shadow-2xl border-pink-500/20 max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center mb-10 shrink-0">
+                <div class="flex items-center gap-4">
+                     <div class="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-400 border border-pink-500/20"><i class="fa-solid fa-terminal text-xl"></i></div>
+                    <div><h3 class="text-2xl font-black italic uppercase">Admin Engine</h3><span class="text-[10px] text-pink-500 font-black uppercase">Core System Control</span></div>
+                </div>
+                <button onclick="closeModals()" class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="flex p-1.5 bg-black/40 rounded-2xl mb-10 border border-white/5 shrink-0 gap-2 overflow-x-auto">
+                <button onclick="switchAdminTab('apps')" id="tab-btn-apps" class="flex-1 py-4 rounded-xl font-black text-xs uppercase transition-all bg-pink-500 text-white min-w-[100px]">Quản lý App</button>
+                <button onclick="switchAdminTab('keys')" id="tab-btn-keys" class="flex-1 py-4 rounded-xl font-black text-xs uppercase transition-all text-gray-500 min-w-[100px]">Tạo & Phân tích Key</button>
+                <button onclick="switchAdminTab('users')" id="tab-btn-users" class="flex-1 py-4 rounded-xl font-black text-xs uppercase transition-all text-gray-500 min-w-[100px]">Quản lý User Thực</button>
+            </div>
+
+            <div class="overflow-y-auto custom-scroll flex-1 pr-2">
+                
+                <div id="admin-tab-apps" class="space-y-8">
+                    <div class="bg-white/5 p-8 rounded-[2rem] border border-white/5 space-y-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <input type="text" id="adm-app-name" placeholder="Tên ứng dụng" class="input-premium">
+                            <input type="text" id="adm-app-size" placeholder="Dung lượng (VD: 100MB)" class="input-premium">
+                        </div>
+                        <input type="text" id="adm-app-url" placeholder="Link Yeumoney (Dành cho Free)" class="input-premium">
+                        <input type="text" id="adm-app-premium-url" placeholder="Link Mediafire (Dành cho Premium)" class="input-premium">
+                        <button onclick="adminAddApp()" class="w-full btn-ios-26 btn-ios-primary uppercase tracking-widest bg-pink-500 shadow-pink-500/20">Cập nhật ứng dụng</button>
+                    </div>
+                    <div id="adm-list-preview" class="grid grid-cols-1 gap-4"></div>
+                </div>
+
+                <div id="admin-tab-keys" class="hidden space-y-8">
+                     <div class="bg-white/5 p-8 rounded-[2rem] border border-white/5 space-y-6 text-center">
+                        <i class="fa-solid fa-key text-4xl text-yellow-500 mb-2"></i>
+                        <h4 class="font-black uppercase text-sm">Trình tạo mã Premium Vĩnh Viễn</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <input type="text" id="adm-key-prefix" value="TAI-" class="input-premium font-mono">
+                            <input type="number" id="adm-key-count" value="5" class="input-premium">
+                        </div>
+                        <button onclick="adminGenerateKeys()" class="w-full btn-ios-26 bg-yellow-500 text-black shadow-yellow-500/20">Phát hành mã vĩnh viễn</button>
+                    </div>
+
+                    <div class="bg-white/5 p-8 rounded-[2rem] border border-white/5 space-y-6">
+                        <h4 class="font-black uppercase text-sm text-yellow-500 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-chart-pie"></i> Báo cáo & Lịch sử Key
+                        </h4>
+                        <div class="grid grid-cols-3 gap-4 text-center mb-6">
+                            <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                                <span id="stat-total-keys" class="block text-3xl font-black text-cyan-400">0</span>
+                                <span class="text-[9px] uppercase font-bold text-gray-500 mt-1 block">Tổng số mã</span>
+                            </div>
+                            <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                                <span id="stat-used-keys" class="block text-3xl font-black text-red-400">0</span>
+                                <span class="text-[9px] uppercase font-bold text-gray-500 mt-1 block">Mã đã dùng</span>
+                            </div>
+                            <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                                <span id="stat-unused-keys" class="block text-3xl font-black text-green-400">0</span>
+                                <span class="text-[9px] uppercase font-bold text-gray-500 mt-1 block">Mã còn trống</span>
+                            </div>
+                        </div>
+                        
+                        <div id="adm-keys-history-list" class="space-y-3 max-h-72 overflow-y-auto custom-scroll pr-2">
+                            </div>
+                    </div>
+                </div>
+
+                <div id="admin-tab-users" class="hidden space-y-8">
+                    <div class="bg-white/5 p-8 rounded-[2rem] border border-white/5 space-y-6">
+                         <div class="flex items-center gap-3 mb-2">
+                            <i class="fa-solid fa-user-lock text-2xl text-pink-400"></i>
+                            <h4 class="font-black uppercase text-sm">Trình Quản Lý & Cấp Lại Mật Khẩu</h4>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <input type="text" id="adm-reset-user" placeholder="Tên Username cần đổi pass" class="input-premium">
+                            <input type="text" id="adm-reset-pass" placeholder="Nhập mật khẩu mới" class="input-premium">
+                        </div>
+                        <button onclick="adminResetUserPass()" class="w-full btn-ios-26 bg-pink-500 text-white shadow-pink-500/20">Tiến hành đổi mật khẩu</button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h4 class="font-black uppercase text-xs text-cyan-400 ml-2"><i class="fa-solid fa-users"></i> Danh sách User Thực (Đã Đăng Ký)</h4>
+                        <div id="adm-users-list" class="space-y-3">
+                            </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-rating" class="hidden fixed inset-0 bg-black/98 z-[9000] flex justify-center items-center p-6 backdrop-blur-xl">
+        <div class="glass-card w-full max-w-md p-10 text-center border-white/10 relative">
+            <div class="modal-scroll-container custom-scroll">
+                <h3 class="text-2xl font-black mb-6 italic text-cyan-400 uppercase">System Feedback</h3>
+                
+                <div class="feedback-img-preview" id="feedback-preview">
+                    <i class="fa-solid fa-image text-4xl text-gray-700"></i>
+                </div>
+                <input type="file" id="feedback-file" accept="image/*" class="hidden" onchange="previewFeedbackImage(event)">
+                <button onclick="document.getElementById('feedback-file').click()" class="mb-6 text-xs font-bold text-cyan-500 underline uppercase tracking-widest">
+                    <i class="fa-solid fa-camera mr-2"></i> Thêm hình ảnh minh chứng
+                </button>
+
+                <div class="star-rating mb-8">
+                     <input type="radio" id="star5" name="rating" value="5"><label for="star5"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="star4" name="rating" value="4"><label for="star4"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="star3" name="rating" value="3"><label for="star3"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="star2" name="rating" value="2"><label for="star2"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="star1" name="rating" value="1"><label for="star1"><i class="fas fa-star"></i></label>
+                </div>
+                
+                <textarea id="rev-text" rows="3" class="input-premium resize-none mb-6" placeholder="Chia sẻ trải nghiệm của bạn..."></textarea>
+                <button onclick="sendReview()" class="w-full btn-ios-26 btn-ios-primary uppercase">Gửi đánh giá ngay</button>
+                <button onclick="closeModals()" class="mt-4 text-gray-600 font-black uppercase text-[10px] block w-full text-center">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-auth" class="hidden fixed inset-0 bg-black/98 backdrop-blur-2xl z-[9500] flex justify-center items-center p-6">
+        <div class="glass-card w-full max-w-sm p-8 shadow-2xl border-white/5">
+            <div class="flex mb-8 border-b border-white/10">
+                <button onclick="switchAuthMode('login')" id="tab-login" class="auth-tab-btn active flex-1 py-3 text-xs font-black uppercase tracking-widest text-center">Đăng Nhập</button>
+                <button onclick="switchAuthMode('register')" id="tab-register" class="auth-tab-btn flex-1 py-3 text-xs font-black uppercase tracking-widest text-center">Đăng Ký</button>
+            </div>
+
+            <div id="form-login" class="space-y-5">
+                <div class="text-center mb-6"><h3 class="text-2xl font-black italic text-cyan-400 uppercase">Welcome Back</h3></div>
+                <input type="text" id="auth-l-email" placeholder="Email hoặc Username" class="input-premium">
+                <input type="password" id="auth-l-pass" placeholder="Mật khẩu" class="input-premium">
+                <button onclick="handleLogin()" class="w-full btn-ios-26 btn-ios-primary mt-6">Tiếp tục</button>
+                <p class="text-[9px] text-gray-500 text-center mt-4">Quên mật khẩu? Liên hệ Admin Zalo</p>
+            </div>
+
+            <div id="form-register" class="hidden space-y-4">
+                <div class="text-center mb-6"><h3 class="text-2xl font-black italic text-pink-400 uppercase">New Member</h3></div>
+                <input type="text" id="auth-r-name" placeholder="Tên hiển thị (Username)" class="input-premium">
+                <input type="email" id="auth-r-email" placeholder="Email đăng ký" class="input-premium">
+                <input type="password" id="auth-r-pass" placeholder="Mật khẩu bảo mật" class="input-premium">
+                <input type="password" id="auth-r-pass-confirm" placeholder="Xác nhận mật khẩu" class="input-premium">
+                <button onclick="handleRegister()" class="w-full btn-ios-26 bg-pink-500 text-white shadow-pink-500/20 mt-6">Tạo tài khoản mới</button>
+            </div>
+
+            <button onclick="closeModals()" class="w-full text-gray-600 font-black uppercase text-[10px] mt-6 border-t border-white/5 pt-4">Hủy thao tác</button>
+        </div>
+    </div>
+
+    <div id="modal-key" class="hidden fixed inset-0 bg-black/98 z-[9000] flex justify-center items-center p-6">
+        <div class="glass-card w-full max-w-sm p-10 text-center border-t-4 border-yellow-500">
+            <div class="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fa-solid fa-crown text-2xl text-yellow-500"></i></div>
+            <h3 class="text-xl font-black mb-4 uppercase">Kích hoạt Premium</h3>
+            <input type="text" id="key-input" placeholder="TAI-XXXXXXX" class="w-full bg-black/60 border border-white/10 p-5 rounded-2xl text-center font-mono text-cyan-400 text-lg mb-6 outline-none uppercase">
+            <button onclick="checkKey()" class="w-full btn-ios-26 bg-white text-black mb-6 uppercase">Xác nhận mã</button>
+            <a href="https://zalo.me/0905564558" target="_blank" class="block w-full py-3 bg-[#0068ff] text-white rounded-xl font-bold text-[10px] uppercase">Mua Key Zalo: 0905564558</a>
+            <button onclick="closeModals()" class="mt-6 text-gray-600 text-[10px] uppercase font-black">Hủy bỏ</button>
+        </div>
+    </div>
+
+    <div id="modal-history" class="hidden fixed inset-0 bg-black/95 z-[9000] flex justify-center items-center p-6 backdrop-blur-md">
+        <div class="glass-card w-full max-w-md p-10">
+            <h3 class="text-xl font-black italic uppercase mb-10"><i class="fa-solid fa-history text-cyan-400 mr-2"></i> Nhật ký</h3>
+            <div id="history-list" class="space-y-4 max-h-[400px] overflow-y-auto custom-scroll pr-2"></div>
+            <button onclick="closeModals()" class="w-full mt-10 btn-ios-26 btn-ios-secondary">Đóng</button>
+        </div>
+    </div>
+
+    <div id="login-toast">
+         <div class="flex items-center gap-5 bg-[#0b0e14] p-5 rounded-[1.4rem] min-w-[340px]">
+            <img id="toast-img" src="" class="w-14 h-14 rounded-2xl border-2 border-white/10 object-cover">
+            <div>
+                <p id="toast-user" class="font-black text-sm text-white uppercase"></p>
+                <p class="text-[9px] text-cyan-400 uppercase font-black tracking-widest mt-1">Authorized Access</p>
+             </div>
+        </div>
+    </div>
+
+    <audio id="sfx" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+
+    <script>
+        /**
+         * GLOBAL CONFIG & DATABASE
+         */
+        const ADMIN_EMAIL = "taip9912@gmail.com";
+        const ADMIN_PASS = "123";
+        const ZALO_CONTACT = "0905564558";
+
+        let apps = JSON.parse(localStorage.getItem('apps_db')) || [
+            { 
+                id: 101, 
+                name: "DeltaVN V10.5", 
+                size: "114.67 MB", 
+                update: "24/01/2026", 
+                url: "https://yeumoney.com/dsqZlt",
+                premium_url: "https://www.mediafire.com/file/dbav7s1fqep3mq8/DeltaVN_V10.5_TaiYTB.ipa/file"
+            }
+        ];
+        
+        let validKeys = JSON.parse(localStorage.getItem('premium_keys_db')) || {};
+        let premiumEmails = JSON.parse(localStorage.getItem('premium_emails_db')) || [];
+        
+        // Data Người dùng đăng ký thật
+        let registeredUsers = JSON.parse(localStorage.getItem('registered_users_db')) || [];
+        
+        // Thống kê truy cập & đánh giá thật
+        let systemStats = JSON.parse(localStorage.getItem('system_stats_db')) || { views: 0, ratings: 0 };
+
+        /**
+         * SYSTEM LIFECYCLE
+         */
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log("%c TAIYTB v5.0 SYSTEM BOOTED (iOS 26 Engine) ", "background: #22d3ee; color: #000; font-weight: bold;");
+            
+            try {
+                // Tự động tăng lượt truy cập
+                systemStats.views += 1;
+                localStorage.setItem('system_stats_db', JSON.stringify(systemStats));
+
+                initStats();
+                setupUserDropdown();
+                
+                const savedUser = localStorage.getItem('currentUser');
+                if(savedUser) {
+                    updateUI(JSON.parse(savedUser));
+                } else {
+                    const remembered = JSON.parse(localStorage.getItem('remembered_account'));
+                    if(remembered) {
+                        document.getElementById('auth-l-email').value = remembered.email;
+                        document.getElementById('auth-l-pass').value = remembered.pass;
+                    }
+                }
+
+                renderAppList();
+                
+                const popupSeen = sessionStorage.getItem('popup-notification-seen');
+                if(!popupSeen) {
+                    document.getElementById('modal-popup-notification').classList.remove('hidden');
+                } else {
+                    checkIntroStatus();
+                }
+
+            } catch (err) {
+                console.error("System Boot Failure: ", err);
+            }
+        });
+
+        function closeNewNotification() {
+            const popup = document.getElementById('modal-popup-notification');
+            popup.style.opacity = '0';
+            popup.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                popup.classList.add('hidden');
+                popup.style.opacity = '1';
+                sessionStorage.setItem('popup-notification-seen', 'true');
+                checkIntroStatus();
+            }, 500);
+            playSfx();
+        }
+
+        function checkIntroStatus() {
+            const introSeen = sessionStorage.getItem('intro-seen');
+            const modalIntro = document.getElementById('modal-intro');
+            
+            if(!introSeen) {
+                modalIntro.classList.remove('hidden');
+            } else {
+                modalIntro.classList.add('hidden');
+                startEnvironment();
+            }
+        }
+
+        /**
+         * USER INTERFACE MODULE
+         */
+        function setupUserDropdown() {
+            const btn = document.getElementById('user-btn');
+            const dropdown = document.getElementById('dropdown');
+            
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = dropdown.classList.contains('scale-0');
+                if(isHidden) {
+                    dropdown.classList.replace('scale-0', 'scale-100');
+                    dropdown.classList.replace('opacity-0', 'opacity-100');
+                    dropdown.classList.replace('pointer-events-none', 'pointer-events-auto');
+                    playSfx();
+                } else {
+                    hideDropdown();
+                }
+            });
+            window.addEventListener('click', hideDropdown);
+            function hideDropdown() {
+                dropdown.classList.replace('scale-100', 'scale-0');
+                dropdown.classList.replace('opacity-100', 'opacity-0');
+                dropdown.classList.replace('pointer-events-auto', 'pointer-events-none');
+            }
+        }
+
+        function closeIntro() { 
+            startEnvironment();
+            document.getElementById('modal-intro').classList.add('hidden'); 
+            sessionStorage.setItem('intro-seen', 'true'); 
+        }
+
+        function showList() { 
+            document.getElementById('view-main').classList.add('hidden');
+            document.getElementById('view-list').classList.remove('hidden'); 
+            playSfx(); 
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function showMain() { 
+            document.getElementById('view-list').classList.add('hidden');
+            document.getElementById('view-main').classList.remove('hidden'); 
+            playSfx(); 
+        }
+
+        /**
+         * MEDIA & ASSETS MODULE
+         */
+        function previewFeedbackImage(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById('feedback-preview');
+                preview.innerHTML = `<img src="${reader.result}" class="w-full h-full object-cover animate-fade-in">`;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        /**
+         * AUTHENTICATION MODULE
+         */
+        const openAuthModal = (e) => { 
+            e.stopPropagation();
+            switchAuthMode('login'); 
+            document.getElementById('modal-auth').classList.remove('hidden');
+        };
+        const openAdminModal = (e) => { 
+            e.stopPropagation();
+            renderAdminPreview(); 
+            renderAdminUsers(); 
+            renderAdminKeysHistory(); // Kích hoạt render bảng phân tích Key khi mở Panel
+            document.getElementById('modal-admin').classList.remove('hidden');
+        };
+        const openRating = () => { document.getElementById('modal-rating').classList.remove('hidden'); playSfx(); };
+        const openKeyModal = (e) => { e.stopPropagation(); document.getElementById('modal-key').classList.remove('hidden'); };
+        
+        function switchAuthMode(mode) {
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const formLogin = document.getElementById('form-login');
+            const formRegister = document.getElementById('form-register');
+            if (mode === 'login') {
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+                formLogin.classList.remove('hidden');
+                formRegister.classList.add('hidden');
+            } else {
+                tabLogin.classList.remove('active');
+                tabRegister.classList.add('active');
+                formLogin.classList.add('hidden');
+                formRegister.classList.remove('hidden');
+            }
+            playSfx();
+        }
+
+        function handleRegister() {
+            const name = document.getElementById('auth-r-name').value.trim();
+            const email = document.getElementById('auth-r-email').value.trim().toLowerCase();
+            const pass = document.getElementById('auth-r-pass').value;
+            const passConfirm = document.getElementById('auth-r-pass-confirm').value;
+            
+            if (!name || !email || !pass || !passConfirm) {
+                return alert("Vui lòng điền đầy đủ thông tin đăng ký!");
+            }
+            if (pass !== passConfirm) {
+                return alert("Mật khẩu xác nhận không khớp!");
+            }
+            if (pass.length < 6) {
+                return alert("Mật khẩu phải có ít nhất 6 ký tự để bảo mật!");
+            }
+
+            const existingEmail = registeredUsers.find(u => u.email === email);
+            const existingName = registeredUsers.find(u => u.name === name);
+            
+            if (existingEmail) {
+                return alert("Email này đã được đăng ký! Vui lòng đăng nhập.");
+            }
+            if (existingName) {
+                return alert("Username này đã được sử dụng! Vui lòng chọn tên khác.");
+            }
+
+            const newUser = {
+                name: name,
+                email: email,
+                pass: pass,
+                avt: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=f472b6&color=fff&bold=true`,
+                joined: new Date().toLocaleDateString('vi-VN'),
+                isRegistered: true
+            };
+            
+            registeredUsers.push(newUser);
+            localStorage.setItem('registered_users_db', JSON.stringify(registeredUsers));
+            alert("ĐĂNG KÝ THÀNH CÔNG! Chào mừng " + name + " gia nhập hệ thống.");
+            
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            updateUI(newUser);
+            showToast(newUser.name, newUser.avt);
+            closeModals();
+        }
+
+        function handleLogin() {
+            const inputVal = document.getElementById('auth-l-email').value.trim();
+            const passInput = document.getElementById('auth-l-pass').value;
+            
+            if(!inputVal || !passInput) return alert("Vui lòng điền đủ thông tin!");
+
+            let user;
+            if(inputVal === ADMIN_EMAIL && passInput === ADMIN_PASS) {
+                user = { 
+                    name: "Quản trị viên", 
+                    email: inputVal, 
+                    pass: passInput,
+                    avt: `https://ui-avatars.com/api/?name=Admin&background=f472b6&color=fff&bold=true` 
+                };
+            } else {
+                const registeredUser = registeredUsers.find(u => 
+                    (u.email === inputVal.toLowerCase() || u.name.toLowerCase() === inputVal.toLowerCase()) 
+                    && u.pass === passInput
+                );
+                if (registeredUser) {
+                    user = registeredUser;
+                } else {
+                    const isKnownAccount = registeredUsers.find(u => u.email === inputVal.toLowerCase() || u.name.toLowerCase() === inputVal.toLowerCase());
+                    if (isKnownAccount) {
+                        return alert("Sai mật khẩu! Vui lòng thử lại.");
+                    }
+
+                    if(inputVal.includes('@')) {
+                        user = {
+                            name: inputVal.split('@')[0].toUpperCase(),
+                            email: inputVal,
+                            pass: passInput,
+                            avt: `https://ui-avatars.com/api/?name=${inputVal}&background=22d3ee&color=000&bold=true`,
+                            isGuest: true
+                        };
+                    } else {
+                        return alert("Tài khoản không tồn tại. Vui lòng đăng ký!");
+                    }
+                }
+            }
+
+            localStorage.setItem('remembered_account', JSON.stringify({email: inputVal, pass: passInput}));
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            
+            updateUI(user);
+            showToast(user.name, user.avt);
+            renderAppList();
+            closeModals();
+        }
+
+        function updateUI(u) {
+            const isAdm = u.email === ADMIN_EMAIL;
+            document.getElementById('menu-login').classList.add('hidden');
+            document.getElementById('menu-logged').classList.remove('hidden');
+            document.getElementById('u-name').innerText = u.name;
+            document.getElementById('u-avatar').src = u.avt;
+            
+            const statusEl = document.getElementById('u-status');
+            const dotEl = document.getElementById('status-dot');
+            
+            if (isAdm) {
+                statusEl.innerText = "ADMINISTRATOR";
+                statusEl.style.color = "#f472b6";
+                dotEl.className = "absolute bottom-0 right-0 w-3 h-3 bg-pink-500 border-2 border-[#161b22] rounded-full";
+            } else if (u.isRegistered) {
+                statusEl.innerText = "Thành viên chính thức";
+                statusEl.style.color = "#22d3ee";
+                dotEl.className = "absolute bottom-0 right-0 w-3 h-3 bg-cyan-400 border-2 border-[#161b22] rounded-full";
+            } else {
+                statusEl.innerText = "Khách truy cập";
+                statusEl.style.color = "#9ca3af";
+                dotEl.className = "absolute bottom-0 right-0 w-3 h-3 bg-gray-500 border-2 border-[#161b22] rounded-full";
+            }
+
+            if(isAdm) {
+                document.getElementById('admin-only-menu').classList.remove('hidden');
+            } else {
+                document.getElementById('admin-only-menu').classList.add('hidden');
+            }
+
+            checkPremiumStatus();
+        }
+
+        function doLogout(e) { 
+            e.stopPropagation();
+            localStorage.removeItem('currentUser'); 
+            location.reload();
+        }
+
+        /**
+         * CORE LOGIC - APP & KEY MANAGEMENT
+         */
+        function renderAppList() {
+            const container = document.getElementById('dynamic-app-list');
+            const isVip = checkPremiumStatus();
+            
+            if(apps.length === 0) {
+                container.innerHTML = '<div class="py-20 text-gray-700 font-bold uppercase tracking-widest text-center">Không tìm thấy ứng dụng</div>';
+                return;
+            }
+
+            container.innerHTML = apps.map(app => {
+                const downloadLink = isVip ? app.premium_url : app.url;
+                const btnLabel = isVip ? 'Tải IPA Premium' : 'Tải xuống (Free)';
+                const btnClass = isVip ? 'btn-premium-active' : 'bg-white text-black hover:bg-gray-200';
+
+                return `
+                <div class="glass-card p-6 flex flex-col sm:flex-row justify-between items-center gap-6 border-l-4 border-cyan-400 group">
+                    <div class="flex items-center gap-6 w-full">
+                        <div class="w-16 h-16 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-3xl text-cyan-400 group-hover:rotate-12 transition-all duration-500"><i class="fa-brands fa-apple"></i></div>
+                        <div>
+                            <h3 class="font-black text-lg group-hover:text-cyan-400 transition-colors uppercase tracking-tight">${app.name}</h3>
+                            <p class="text-[10px] text-gray-500 font-black uppercase mt-1 tracking-wider">${app.size} • Security Verified</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2 w-full sm:w-auto">
+                        <a href="${downloadLink}" target="_blank" onclick="logDownload('${app.name}')" 
+                               class="w-full sm:w-auto text-center ${btnClass} px-10 py-5 rounded-2xl font-black text-xs uppercase min-w-[240px] transition-all active:scale-95 flex items-center justify-center gap-3">
+                            <i class="fa-solid fa-cloud-arrow-down text-base"></i> ${btnLabel}
+                        </a>
+                         ${!isVip ? '<p class="text-[8px] text-center text-gray-600 font-bold uppercase tracking-tighter">Vượt liên kết Yeumoney để tải IPA</p>' : ''}
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function adminAddApp() {
+            const name = document.getElementById('adm-app-name').value;
+            const size = document.getElementById('adm-app-size').value;
+            const url = document.getElementById('adm-app-url').value;
+            const pUrl = document.getElementById('adm-app-premium-url').value;
+            if(!name || !url || !pUrl) return alert("Vui lòng nhập đầy đủ thông tin link Free và Premium!");
+            
+            const newAppData = { 
+                id: Date.now(), 
+                name, 
+                size: size || "N/A", 
+                update: new Date().toLocaleDateString('vi-VN'),
+                url, 
+                premium_url: pUrl 
+            };
+            
+            apps.push(newAppData);
+            localStorage.setItem('apps_db', JSON.stringify(apps));
+            renderAppList(); 
+            renderAdminPreview();
+            alert("Đã cập nhật hệ thống dữ liệu ứng dụng thành công!");
+            document.getElementById('adm-app-name').value = "";
+            document.getElementById('adm-app-url').value = "";
+            document.getElementById('adm-app-premium-url').value = "";
+        }
+
+        function adminDeleteApp(id) {
+            if(confirm("Confirm deletion of this application?")) {
+                apps = apps.filter(item => item.id !== id);
+                localStorage.setItem('apps_db', JSON.stringify(apps));
+                renderAppList(); 
+                renderAdminPreview();
+            }
+        }
+
+        function renderAdminPreview() {
+            const container = document.getElementById('adm-list-preview');
+            container.innerHTML = apps.map(item => `
+                <div class="flex justify-between items-center p-5 bg-white/5 rounded-2xl border border-white/5 group hover:border-pink-500/30 transition-all">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-black uppercase text-gray-300">${item.name}</span>
+                        <span class="text-[9px] text-gray-600 font-bold italic">${item.size}</span>
+                    </div>
+                    <button onclick="adminDeleteApp(${item.id})" class="w-10 h-10 rounded-full flex items-center justify-center bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                        <i class="fa-solid fa-trash-can text-sm"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // TÍNH NĂNG QUẢN LÝ USER THỰC THẾ
+        function renderAdminUsers() {
+            const container = document.getElementById('adm-users-list');
+            
+            // Render từ Database 100% người thật đã bấm nút "Đăng Ký"
+            if(registeredUsers.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500 text-[10px] py-6 uppercase font-bold tracking-widest bg-black/40 rounded-xl">Hệ thống chưa ghi nhận thành viên nào đăng ký.</p>';
+                return;
+            }
+            
+            container.innerHTML = registeredUsers.map(u => {
+                // Phân tích xem user này có sở hữu Key Premium không
+                const isPremium = premiumEmails.includes(u.email);
+                
+                // Thiết kế Badge hiển thị trạng thái
+                const premiumBadge = isPremium 
+                    ? `<span class="bg-yellow-500/10 text-yellow-500 px-2.5 py-1 rounded border border-yellow-500/30 text-[8px] font-black uppercase mt-1.5 w-max"><i class="fa-solid fa-crown mr-1"></i>Premium User</span>`
+                    : `<span class="bg-gray-500/10 text-gray-400 px-2.5 py-1 rounded border border-gray-500/30 text-[8px] font-black uppercase mt-1.5 w-max">Thành viên cơ bản</span>`;
+                
+                const joinedDate = u.joined ? u.joined : "Không ghi nhận";
+
+                return `
+                <div class="user-tag">
+                    <div class="flex items-center gap-4 w-full">
+                        <img src="${u.avt}" class="w-11 h-11 rounded-full border-2 border-white/10 object-cover shrink-0">
+                        <div class="flex flex-col flex-1">
+                            <span class="text-sm font-black text-white tracking-tight">${u.name}</span>
+                            <span class="text-[10px] font-mono text-cyan-500/70">${u.email}</span>
+                            ${premiumBadge}
+                        </div>
+                        <div class="flex flex-col items-end gap-2 shrink-0">
+                            <span class="text-[8px] text-gray-500 uppercase font-black tracking-widest"><i class="fa-regular fa-clock mr-1"></i>Gia nhập: ${joinedDate}</span>
+                            <button onclick="document.getElementById('adm-reset-user').value = '${u.name}'" class="text-[10px] font-bold bg-white/10 px-3 py-1.5 rounded-lg text-pink-400 hover:bg-pink-500 hover:text-white transition-all shadow-[0_0_15px_rgba(244,114,182,0.1)]">
+                                <i class="fa-solid fa-key mr-1"></i>Sửa Mật Khẩu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function adminResetUserPass() {
+            const targetUser = document.getElementById('adm-reset-user').value.trim();
+            const newPass = document.getElementById('adm-reset-pass').value.trim();
+
+            if(!targetUser || !newPass) return alert("Vui lòng nhập Username và Mật khẩu mới!");
+            
+            const userIndex = registeredUsers.findIndex(u => u.name.toLowerCase() === targetUser.toLowerCase());
+            if(userIndex !== -1) {
+                registeredUsers[userIndex].pass = newPass;
+                localStorage.setItem('registered_users_db', JSON.stringify(registeredUsers));
+                alert(`THÀNH CÔNG! Mật khẩu của tài khoản [${registeredUsers[userIndex].name}] đã đổi thành: ${newPass}`);
+                
+                document.getElementById('adm-reset-user').value = "";
+                document.getElementById('adm-reset-pass').value = "";
+            } else {
+                alert("LỖI: Không tìm thấy thành viên nào có Username là: " + targetUser);
+            }
+        }
+
+        function switchAdminTab(tabId) {
+            const tabs = ['apps', 'keys', 'users'];
+            tabs.forEach(t => {
+                const el = document.getElementById('admin-tab-' + t);
+                const btn = document.getElementById('tab-btn-' + t);
+                
+                if(t === tabId) {
+                    el.classList.remove('hidden');
+                    btn.className = "flex-1 py-4 rounded-xl font-black text-xs uppercase transition-all bg-pink-500 text-white min-w-[100px]";
+                } else {
+                    el.classList.add('hidden');
+                    btn.className = "flex-1 py-4 rounded-xl font-black text-xs uppercase transition-all text-gray-500 min-w-[100px]";
+                }
+            });
+        }
+
+        // TÍNH NĂNG TẠO KEY MỚI
+        function adminGenerateKeys() {
+            const prefix = document.getElementById('adm-key-prefix').value.toUpperCase();
+            const count = parseInt(document.getElementById('adm-key-count').value) || 0;
+            
+            const currentDate = new Date().toLocaleString('vi-VN');
+            
+            for(let i = 0; i < count; i++) {
+                const randomStr = Math.random().toString(36).substring(2, 10).toUpperCase();
+                const fullKey = prefix + randomStr;
+                
+                // Lưu cấu trúc Object rõ ràng để phân tích lịch sử
+                validKeys[fullKey] = {
+                    type: "PERMANENT",
+                    date: currentDate,
+                    used: false,
+                    usedBy: null,
+                    usedDate: null
+                };
+            }
+            
+            localStorage.setItem('premium_keys_db', JSON.stringify(validKeys));
+            
+            // Ngay khi tạo xong, update lại bảng phân tích ngay lập tức
+            renderAdminKeysHistory();
+            playSfx();
+        }
+
+        // TÍNH NĂNG PHÂN TÍCH VÀ HIỂN THỊ LỊCH SỬ KEY
+        function renderAdminKeysHistory() {
+            const container = document.getElementById('adm-keys-history-list');
+            const keysArray = Object.keys(validKeys);
+            
+            let total = keysArray.length;
+            let usedCount = 0;
+            let unusedCount = 0;
+            
+            if(total === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500 text-[10px] py-6 uppercase font-bold tracking-widest bg-black/40 rounded-xl">Chưa có mã Key nào được tạo trong hệ thống.</p>';
+                document.getElementById('stat-total-keys').innerText = "0";
+                document.getElementById('stat-used-keys').innerText = "0";
+                document.getElementById('stat-unused-keys').innerText = "0";
+                return;
+            }
+            
+            let htmlContent = "";
+            
+            // Loop array từ cuối lên đầu để Key mới tạo nằm trên cùng
+            keysArray.reverse().forEach(key => {
+                const keyData = validKeys[key];
+                
+                let isUsed = false;
+                let usedByText = "Trạng thái: Sẵn sàng dùng";
+                let dateCreated = "Không rõ";
+                
+                // Colors setup
+                let statusColor = "text-green-400";
+                let badgeBg = "bg-green-500/10 border-green-500/30";
+                let textStatus = "Chưa kích hoạt";
+                
+                // Logic xử lý phân tích
+                if (typeof keyData === 'object') {
+                    isUsed = keyData.used;
+                    dateCreated = keyData.date || "Không rõ";
+                    
+                    if (isUsed) {
+                        usedCount++;
+                        usedByText = `Dùng bởi: <b class="text-white">${keyData.usedBy}</b> <br> <span class="text-[8px] text-gray-600">Lúc: ${keyData.usedDate}</span>`;
+                        statusColor = "text-red-400";
+                        badgeBg = "bg-red-500/10 border-red-500/30";
+                        textStatus = "Đã sử dụng";
+                    } else {
+                        unusedCount++;
+                    }
+                } else {
+                    // Logic tương thích ngược (key dạng string "PERMANENT" cũ)
+                    unusedCount++;
+                }
+                
+                htmlContent += `
+                    <div class="p-4 bg-black/40 border border-white/5 rounded-xl flex justify-between items-center hover:border-cyan-500/20 transition-all">
+                        <div class="flex flex-col gap-1.5">
+                            <span class="font-mono text-[15px] font-black text-cyan-400 tracking-wider">${key}</span>
+                            <span class="text-[9px] text-gray-500 font-bold uppercase"><i class="fa-solid fa-hammer mr-1"></i>Tạo: ${dateCreated}</span>
+                        </div>
+                        <div class="text-right flex flex-col items-end gap-1.5">
+                            <div class="${badgeBg} border ${statusColor} px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">
+                                ${textStatus}
+                            </div>
+                            <span class="text-[9px] text-gray-400">${usedByText}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Đẩy Data ra HTML
+            container.innerHTML = htmlContent;
+            
+            // Update Số liệu Board
+            document.getElementById('stat-total-keys').innerText = total.toString();
+            document.getElementById('stat-used-keys').innerText = usedCount.toString();
+            document.getElementById('stat-unused-keys').innerText = unusedCount.toString();
+        }
+
+        // TÍNH NĂNG KIỂM TRA KEY KHI NGƯỜI DÙNG KÍCH HOẠT
+        function checkKey() {
+            const input = document.getElementById('key-input').value.trim().toUpperCase();
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+
+            if(!user) return alert("Vui lòng đăng nhập trước khi kích hoạt!");
+            
+            if(validKeys[input]) {
+                const keyData = validKeys[input];
+                
+                // Đọc dữ liệu Object chuẩn
+                if (typeof keyData === 'object') {
+                    if (keyData.used === true) {
+                        return alert(`CẢNH BÁO TỪ HỆ THỐNG: \nMã này đã được kích hoạt thành công vào lúc ${keyData.usedDate} bởi tài khoản ${keyData.usedBy}! Vui lòng sử dụng mã khác.`);
+                    }
+                    
+                    if(!premiumEmails.includes(user.email)) {
+                        premiumEmails.push(user.email);
+                        localStorage.setItem('premium_emails_db', JSON.stringify(premiumEmails));
+                    }
+
+                    // Lưu lịch sử kích hoạt thay vì xóa key đi
+                    validKeys[input].used = true;
+                    validKeys[input].usedBy = user.email;
+                    validKeys[input].usedDate = new Date().toLocaleString('vi-VN');
+                    
+                    localStorage.setItem('premium_keys_db', JSON.stringify(validKeys));
+                    
+                    alert("CHÚC MỪNG! Tài khoản " + user.email + " đã được nâng cấp PREMIUM VĨNH VIỄN.");
+                    location.reload();
+                    
+                } else {
+                    // Cũ (Chỉ phòng hờ người dùng xài key cũ được tạo trước đó chưa xóa)
+                    if(!premiumEmails.includes(user.email)) {
+                        premiumEmails.push(user.email);
+                        localStorage.setItem('premium_emails_db', JSON.stringify(premiumEmails));
+                    }
+                    delete validKeys[input];
+                    localStorage.setItem('premium_keys_db', JSON.stringify(validKeys));
+                    alert("CHÚC MỪNG! Tài khoản " + user.email + " đã được nâng cấp PREMIUM VĨNH VIỄN.");
+                    location.reload();
+                }
+            } else { 
+                alert("LỖI: Mã kích hoạt không hợp lệ hoặc hệ thống không tìm thấy mã này!");
+            }
+        }
+
+        function checkPremiumStatus() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const badge = document.getElementById('premium-badge');
+            const timer = document.getElementById('expiry-timer');
+
+            if(user && premiumEmails.includes(user.email)) {
+                badge.classList.remove('hidden');
+                timer.classList.remove('hidden');
+                return true;
+            }
+
+            badge.classList.add('hidden');
+            timer.classList.add('hidden');
+            return false;
+        }
+
+        /**
+         * UTILITY FUNCTIONS
+         */
+        function openHistory(e) { 
+            e.stopPropagation();
+            const data = JSON.parse(localStorage.getItem('dl_history') || "[]");
+            const listContainer = document.getElementById('history-list');
+            if(data.length === 0) {
+                listContainer.innerHTML = '<p class="text-center text-gray-600 text-[10px] py-10 uppercase font-black tracking-widest">No activities found</p>';
+            } else {
+                listContainer.innerHTML = data.map(i => `
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/5 flex justify-between items-center group hover:border-cyan-500/20 transition-all">
+                        <span class="text-xs font-bold uppercase tracking-tight">${i.name}</span>
+                        <span class="text-[9px] text-gray-600 font-mono italic">${i.time}</span>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('modal-history').classList.remove('hidden'); 
+            playSfx();
+        }
+
+        function logDownload(appName) {
+            let history = JSON.parse(localStorage.getItem('dl_history') || "[]");
+            const entry = { name: appName, time: new Date().toLocaleString('vi-VN') };
+            history.unshift(entry);
+            localStorage.setItem('dl_history', JSON.stringify(history.slice(0, 15)));
+        }
+
+        function showToast(name, avatar) {
+            const toast = document.getElementById('login-toast');
+            document.getElementById('toast-user').innerText = name;
+            document.getElementById('toast-img').src = avatar;
+            
+            toast.classList.add('active'); 
+            setTimeout(() => { toast.classList.remove('active'); }, 5000);
+        }
+
+        function initStats() {
+            const animateValue = (id, target) => {
+                let current = 0;
+                const speed = 50;
+                const step = Math.ceil(target / speed) || 1; 
+                
+                if (target === 0) {
+                    document.getElementById(id).innerText = "0";
+                    return;
+                }
+
+                const timer = setInterval(() => {
+                    current += step;
+                    if(current >= target) {
+                        document.getElementById(id).innerText = target.toLocaleString();
+                        clearInterval(timer);
+                    } else {
+                        document.getElementById(id).innerText = current.toLocaleString();
+                    }
+                }, 20);
+            };
+            
+            animateValue('v-count', systemStats.views); 
+            animateValue('r-count', systemStats.ratings);
+        }
+
+        function playSfx() { 
+            const sfx = document.getElementById('sfx');
+            if(sfx) {
+                sfx.currentTime = 0;
+                sfx.play().catch(() => {}); 
+            }
+        }
+
+        function startEnvironment() { 
+            const audio = document.getElementById('bg-music');
+            if(audio) {
+                audio.volume = 0.05;
+                audio.play().catch(() => { console.log("Auto-play restricted."); }); 
+            }
+        }
+
+        function closeModals() { 
+            const modals = document.querySelectorAll('[id^="modal-"]');
+            modals.forEach(m => { 
+                if(m.id !== 'modal-intro' && m.id !== 'modal-popup-notification') m.classList.add('hidden'); 
+            });
+        }
+
+        function sendReview() {
+            const text = document.getElementById('rev-text').value;
+            if(!text) return alert("Vui lòng nhập nội dung đánh giá!");
+            
+            systemStats.ratings += 1;
+            localStorage.setItem('system_stats_db', JSON.stringify(systemStats));
+            document.getElementById('r-count').innerText = systemStats.ratings.toLocaleString();
+
+            alert("Thank you! Feedback submitted with evidence.");
+            document.getElementById('rev-text').value = "";
+            document.getElementById('feedback-preview').innerHTML = `<i class="fa-solid fa-image text-4xl text-gray-700"></i>`;
+            closeModals();
+        }
+    </script>
+</body>
+</html>
